@@ -1,0 +1,242 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Saper_1_0
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private Random random = new Random();
+        private int[,] matricks=new int[10,10];
+        private int[,] mineMatricks=new int[10,10];
+        private Button[,] buttons = new Button[10, 10];
+        public MainWindow()
+        {
+            InitializeComponent();
+            SetMatricks();
+            
+            for (int i = 0; i < buttons.GetLength(0); i++)
+            {
+                for (int j = 0; j < buttons.GetLength(1); j++)
+                {
+                    Button a = new Button();
+                    a.Click += A_Click;
+                    mainGrid.Children.Add(a);
+                    Grid.SetColumn(a, j);
+                    Grid.SetRow(a, i);
+                    buttons[i, j] = a;
+                }
+            }
+            
+        }
+
+        private void A_Click(object sender, RoutedEventArgs e)
+        {
+            Button a = (Button)sender;
+            if (a.Content==null)
+            {
+                
+                int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
+                if (b > 0)
+                {
+                    a.Content = b;
+                    a.Background = new SolidColorBrush(Colors.Green);
+                }
+                else if (b == 0)
+                {
+                    a.Content = " ";
+                    a.Background = new SolidColorBrush(Colors.Blue);
+                    Open(Grid.GetRow(a), Grid.GetColumn(a));
+                }
+                else if (b==-1)
+                {
+                    a.Background = new SolidColorBrush(Colors.Red);
+                    a.Content = " ";
+                    ShowMines();
+                    MessageBox.Show("You die");
+                }
+            }
+            
+        }
+        public void Open(int x,int y)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if ((i-x)*(i-x)<2&&(j-y)*(j-y)<2)
+                    {
+                        Button a = buttons[i, j];
+                        if (a.Content == null)
+                        {
+
+                            int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
+                            if (b > 0)
+                            {
+                                a.Content = b;
+                                a.Background = new SolidColorBrush(Colors.Green);
+                            }
+                            else if (b == 0)
+                            {
+                                a.Content = " ";
+                                a.Background = new SolidColorBrush(Colors.Blue);
+                                Open(Grid.GetRow(a), Grid.GetColumn(a));
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        }
+        public void SetMines(int mines)
+        {
+            for (int i = 0; i < mines; i++)
+            {
+                int x = random.Next(10);
+                int y = random.Next(10);
+                //while (mineMatricks[x,y]!=null)
+                //{
+                    x = random.Next(10);
+                    y = random.Next(10);
+                //}
+                mineMatricks[x,y] = 1;
+            }
+        }
+        public void SetMatricks()
+        {
+            SetMines(20);
+            for (int i = 1; i < 9; i++)
+            {
+                for (int j = 1; j < 9; j++)
+                {
+                    if (mineMatricks[i,j]!=1)
+                    {
+                        matricks[i, j] = (mineMatricks[i - 1, j - 1] + mineMatricks[i - 1, j] + mineMatricks[i - 1, j + 1] +
+                                            mineMatricks[i, j - 1] + mineMatricks[i, j + 1] +
+                                            mineMatricks[i + 1, j - 1] + mineMatricks[i + 1, j] + mineMatricks[i + 1, j + 1]);
+                    }
+                    else
+                    {
+                        matricks[i, j] = -1;
+                    }
+                    
+                }
+            }
+            for (int i = 1; i < 9; i++)
+            {
+                if (mineMatricks[i,0]!=1)
+                {
+                    matricks[i, 0] = mineMatricks[i, 1] + mineMatricks[i - 1, 0] + mineMatricks[i - 1, 1]
+                        + mineMatricks[i + 1, 0] + mineMatricks[i + 1, 1];
+                }
+                else
+                {
+                    matricks[i, 0] = -1;
+                }
+            }
+            for (int i = 1; i < 9; i++)
+            {
+                if (mineMatricks[i, 9] != 1)
+                {
+                    matricks[i, 9] = mineMatricks[i, 8] + mineMatricks[i - 1, 9] + mineMatricks[i - 1, 8]
+                        + mineMatricks[i + 1, 9] + mineMatricks[i + 1, 8];
+                }
+                else
+                {
+                    matricks[i, 9] = -1;
+                }
+            }
+            for (int i = 1; i < 9; i++)
+            {
+                if (mineMatricks[9,i] != 1)
+                {
+                    matricks[9,i] = mineMatricks[8,i] + mineMatricks[9, i - 1] + mineMatricks[8,i - 1]
+                        + mineMatricks[9,i + 1] + mineMatricks[8, i + 1];
+                }
+                else
+                {
+                    matricks[9, i] = -1;
+                }
+            }
+            for (int i = 1; i < 9; i++)
+            {
+                if (mineMatricks[0, i] != 1)
+                {
+                    matricks[0, i] = mineMatricks[1, i] + mineMatricks[1, i - 1] + mineMatricks[0, i - 1]
+                        + mineMatricks[0, i + 1] + mineMatricks[1, i + 1];
+                }
+                else
+                {
+                    matricks[0, i] = -1;
+                }
+            }
+            if (mineMatricks[0,0]!=1)
+            {
+                matricks[0, 0] = mineMatricks[0, 1] + mineMatricks[1, 0] + mineMatricks[1, 1];
+            }
+            else
+            {
+                matricks[0, 0] = -1;
+            }
+            if (mineMatricks[9, 9] != 1)
+            {
+                matricks[9, 9] = mineMatricks[9, 8] + mineMatricks[8, 9] + mineMatricks[8, 8];
+            }
+            else
+            {
+                matricks[9, 9] = -1;
+            }
+            if (mineMatricks[0, 9] != 1)
+            {
+                matricks[0, 9] = mineMatricks[0, 8] + mineMatricks[1, 9] + mineMatricks[1, 8];
+            }
+            else
+            {
+                matricks[0, 9] = -1;
+            }
+            if (mineMatricks[9, 0] != 1)
+            {
+                matricks[9, 0] = mineMatricks[9, 1] + mineMatricks[8, 0] + mineMatricks[8, 1];
+            }
+            else
+            {
+                matricks[9, 0] = -1;
+            }
+        }
+        public void ShowMines()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j <10; j++)
+                {
+                    if (buttons[i,j].Content==null)
+                    {
+                        if (mineMatricks[i,j]==1)
+                        {
+                            buttons[i,j].Background = new SolidColorBrush(Colors.Red);
+                            buttons[i,j].Content = " ";
+                        }
+                        else
+                        {
+                            buttons[i, j].Content = " ";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
