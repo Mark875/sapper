@@ -290,7 +290,7 @@ namespace Saper_1_0
             }
             for (int i = 1; i < SHeight-1; i++)
             {
-                if (mineMatricks[i, 9] != 1)
+                if (mineMatricks[i, SWidth-1] != 1)
                 {
                     matricks[i, SWidth-1] = mineMatricks[i, SWidth-2] + mineMatricks[i - 1, SWidth-1] + mineMatricks[i - 1, SWidth-2]
                         + mineMatricks[i + 1, SWidth-1] + mineMatricks[i + 1, SWidth-2];
@@ -393,6 +393,7 @@ namespace Saper_1_0
             if (open==SHeight*SWidth-mines)
             {
                 MessageBox.Show("You win");
+                Restart();
             }
         }
         public void Restart()
@@ -412,3 +413,4 @@ namespace Saper_1_0
         }
     }
 }
+
