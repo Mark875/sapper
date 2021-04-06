@@ -24,8 +24,13 @@ namespace Saper_1_0
         private int[,] matricks=new int[10,10];
         private int[,] mineMatricks=new int[10,10];
         private Button[,] buttons = new Button[10, 10];
+        private bool isFlag;
         public MainWindow()
         {
+           
+            
+           
+            
             InitializeComponent();
             SetMatricks();
             
@@ -35,40 +40,104 @@ namespace Saper_1_0
                 {
                     Button a = new Button();
                     a.Click += A_Click;
+                    a.FontSize = 30;
+                    a.Background = new SolidColorBrush(Colors.LightSkyBlue);
                     mainGrid.Children.Add(a);
                     Grid.SetColumn(a, j);
                     Grid.SetRow(a, i);
                     buttons[i, j] = a;
                 }
             }
-            
+            isFlag = false;
+            regime.Click += Regime_Click;
+        }
+
+        private void Regime_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isFlag)
+            {
+                isFlag = true;
+                regime.Header = "Open";
+            }
+            else
+            {
+                isFlag = false;
+                regime.Header = "Flag";
+            }
         }
 
         private void A_Click(object sender, RoutedEventArgs e)
         {
             Button a = (Button)sender;
-            if (a.Content==null)
+            if (a.Content==null&&!isFlag)
             {
                 
                 int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-                if (b > 0)
+                
+
+                switch (b)
                 {
-                    a.Content = b;
-                    a.Background = new SolidColorBrush(Colors.Green);
+                    case -1:
+                        a.Background = new SolidColorBrush(Colors.Red);
+                        a.Content = " ";
+                        ShowMines();
+                        MessageBox.Show("You die");
+                        break;
+                    case -0:
+                        a.Content = " ";
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        Open(Grid.GetRow(a), Grid.GetColumn(a));
+                        break;
+                    case 1:
+                        a.Content = b;
+                       
+                        a.Foreground = new SolidColorBrush(Colors.Blue);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 2:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.Green);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 3:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.Red);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 4:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.DarkBlue);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 5:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.DarkRed);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 6:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.CadetBlue);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 7:
+                        a.Content = b;
+                        a.Foreground= new SolidColorBrush(Colors.Black);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
+                    case 8:
+                        a.Content = b;
+                        a.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        a.Background = new SolidColorBrush(Colors.LightGray);
+                        break;
                 }
-                else if (b == 0)
-                {
-                    a.Content = " ";
-                    a.Background = new SolidColorBrush(Colors.Blue);
-                    Open(Grid.GetRow(a), Grid.GetColumn(a));
-                }
-                else if (b==-1)
-                {
-                    a.Background = new SolidColorBrush(Colors.Red);
-                    a.Content = " ";
-                    ShowMines();
-                    MessageBox.Show("You die");
-                }
+            }
+            else if (isFlag&&a.Content==null)
+            {
+                a.Content = "M";
+            }
+            else if (isFlag&&a.Content=="M")
+            {
+                a.Content = null;
             }
             
         }
@@ -85,16 +154,72 @@ namespace Saper_1_0
                         {
 
                             int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-                            if (b > 0)
+                            //if (b > 0)
+                            //{
+                            //    a.Content = b;
+                            //    a.Background = new SolidColorBrush(Colors.Green);
+                            //}
+                            //else if (b == 0)
+                            //{
+                            //    a.Content = " ";
+                            //    a.Background = new SolidColorBrush(Colors.Blue);
+                            //    Open(Grid.GetRow(a), Grid.GetColumn(a));
+                            //}
+                            
+                            switch (b)
                             {
-                                a.Content = b;
-                                a.Background = new SolidColorBrush(Colors.Green);
-                            }
-                            else if (b == 0)
-                            {
-                                a.Content = " ";
-                                a.Background = new SolidColorBrush(Colors.Blue);
-                                Open(Grid.GetRow(a), Grid.GetColumn(a));
+                                case -1:
+                                    a.Background = new SolidColorBrush(Colors.Red);
+                                    a.Content = " ";
+                                    ShowMines();
+                                    MessageBox.Show("You die");
+                                    break;
+                                case -0:
+                                    a.Content = " ";
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    Open(Grid.GetRow(a), Grid.GetColumn(a));
+                                    break;
+                                case 1:
+                                    a.Content = b;
+
+                                    a.Foreground = new SolidColorBrush(Colors.Blue);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 2:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.Green);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 3:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.Red);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 4:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.DarkBlue);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 5:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.DarkRed);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 6:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.CadetBlue);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 7:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.Black);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
+                                case 8:
+                                    a.Content = b;
+                                    a.Foreground = new SolidColorBrush(Colors.DarkGray);
+                                    a.Background = new SolidColorBrush(Colors.LightGray);
+                                    break;
                             }
                         }
                     }
@@ -108,17 +233,17 @@ namespace Saper_1_0
             {
                 int x = random.Next(10);
                 int y = random.Next(10);
-                //while (mineMatricks[x,y]!=null)
-                //{
+                while (mineMatricks[x,y]==1)
+                {
                     x = random.Next(10);
                     y = random.Next(10);
-                //}
+                }
                 mineMatricks[x,y] = 1;
             }
         }
         public void SetMatricks()
         {
-            SetMines(20);
+            SetMines(10);
             for (int i = 1; i < 9; i++)
             {
                 for (int j = 1; j < 9; j++)
@@ -223,18 +348,17 @@ namespace Saper_1_0
             {
                 for (int j = 0; j <10; j++)
                 {
-                    if (buttons[i,j].Content==null)
+                    
+                    if (mineMatricks[i,j]==1)
                     {
-                        if (mineMatricks[i,j]==1)
-                        {
-                            buttons[i,j].Background = new SolidColorBrush(Colors.Red);
-                            buttons[i,j].Content = " ";
-                        }
-                        else
-                        {
-                            buttons[i, j].Content = " ";
-                        }
+                        buttons[i,j].Background = new SolidColorBrush(Colors.Red);
+                        buttons[i,j].Content = " ";
                     }
+                    else if(matricks[i,j]==0)
+                    {
+                        buttons[i, j].Content = " ";
+                    }
+                    
                 }
             }
         }
