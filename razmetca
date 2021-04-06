@@ -5,37 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Saper_1_0"
         mc:Ignorable="d"
-        Title="MainWindow" Height="660" Width="600">
+        Title="MainWindow" Height="660" Width="600" Name="Window">
     <DockPanel>
-        <Grid x:Name="mainGrid" DockPanel.Dock="Bottom" Height="600">
+        <Grid x:Name="mainGrid" DockPanel.Dock="Bottom" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                
             </Grid.RowDefinitions>
         </Grid>
         <Menu DockPanel.Dock="Top" Height="25">
+            <MenuItem Header="Game">
+                <MenuItem Header="Height 10">
+                    <MenuItem Header="Up"/>
+                    <MenuItem Header="Down"/>
+                </MenuItem>
+                <MenuItem Header="Width 10">
+                    <MenuItem Header="Up"/>
+                    <MenuItem Header="Down"/>
+                </MenuItem>
+                <MenuItem Header="Mines 20">
+                    <MenuItem Header="Up"/>
+                    <MenuItem Header="Down"/>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="Flag" Name="regime"/>
-
+            
 
         </Menu>
     </DockPanel>
