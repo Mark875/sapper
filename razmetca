@@ -7,7 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="660" Width="600" Name="Window">
     <DockPanel>
-        <Grid x:Name="mainGrid" DockPanel.Dock="Bottom" >
+        <Menu DockPanel.Dock="Top" Height="25" Background="White">
+            <MenuItem Header="Game">
+                <MenuItem Header="Settings" Name="Settings"/>
+                <MenuItem Header="Restart" Name="restart"/>
+            </MenuItem>
+            <MenuItem Header="Flag" Name="regime"/>
+
+
+        </Menu>
+        <Grid x:Name="mainGrid" DockPanel.Dock="Top" >
             <Grid.ColumnDefinitions>
                 
             </Grid.ColumnDefinitions>
@@ -15,25 +24,93 @@
                 
             </Grid.RowDefinitions>
         </Grid>
-        <Menu DockPanel.Dock="Top" Height="25">
-            <MenuItem Header="Game">
-                <MenuItem Header="Height 10">
-                    <MenuItem Header="Up"/>
-                    <MenuItem Header="Down"/>
-                </MenuItem>
-                <MenuItem Header="Width 10">
-                    <MenuItem Header="Up"/>
-                    <MenuItem Header="Down"/>
-                </MenuItem>
-                <MenuItem Header="Mines 20">
-                    <MenuItem Header="Up"/>
-                    <MenuItem Header="Down"/>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Flag" Name="regime"/>
+        <Grid DockPanel.Dock="Bottom" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Name="Mines" Margin="10" TextWrapping="Wrap" Background="White" >
+                
+            </TextBlock>
+            <TextBlock Name="Time" Margin="10" TextWrapping="Wrap" Background="White" Grid.Column="1" >
+
+            </TextBlock>
+        </Grid>
+        <Popup Name="pLink" StaysOpen="True" Placement="Mouse" Width="450" Height="350"
+               PopupAnimation="Scroll" AllowsTransparency="True" >
+            <Border BorderBrush="LightGray" BorderThickness="10" Background="Wheat">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="10" TextWrapping="Wrap">
+                            Settings
+
+                    </TextBlock>
+                    <StackPanel Grid.Row="1">
+
+                        <RadioButton GroupName="1" Content="Новичок" IsChecked="True" Name="noob"/>
+                        <TextBlock Margin="10" TextWrapping="Wrap" >
+                            Поле: 10X10 
+                            Мины: 10
+
+                        </TextBlock>
+                        <RadioButton GroupName="1" Content="Любитель" Name="notpro" />
+                        <TextBlock Margin="10" TextWrapping="Wrap">
+                            Поле: 15X15
+                            Мины: 50
+                            
+
+                        </TextBlock>
+                        <RadioButton GroupName="1" Content="Проффесионал" Name="pro"/>
+                        <TextBlock Margin="10" TextWrapping="Wrap">
+                            Поле: 20X20
+                            Мины: 100
+
+                        </TextBlock>
+                        <RadioButton GroupName="1" Content="Пользовательский" Name="person"/>
+                        
+                    </StackPanel>
+                    <TextBlock Margin="10" TextWrapping="Wrap" Grid.Column="1">
+                            Пользовательские настройки:
+                    </TextBlock>
+                    <StackPanel Grid.Column="1" Grid.Row="1">
+                        
+                        <TextBlock Margin="10" TextWrapping="Wrap">
+                            Высота поля:
+                        </TextBlock>
+                        <TextBox Margin="10" TextWrapping="Wrap" Background="White" Name="THeight">
+                            
+                        </TextBox>
+                        <TextBlock Margin="10" TextWrapping="Wrap">
+                            Ширина поля:
+                        </TextBlock>
+                        <TextBox Margin="10" TextWrapping="Wrap" Background="White" Name="TWidth">
+
+                        </TextBox>
+                        <TextBlock Margin="10" TextWrapping="Wrap">
+                            Количество мин:
+                        </TextBlock>
+                        <TextBox Margin="10" TextWrapping="Wrap" Background="White" Name="TMines">
+
+                        </TextBox>
+                        
+                    </StackPanel>
+                    <Button Content="Ок" Grid.Column="1" Grid.Row="2" Height="30" Width="60" Name="SettingsOk"/>
+                </Grid>
+                
+            </Border>
             
 
-        </Menu>
+
+        </Popup>
+        
     </DockPanel>
     
 </Window>
