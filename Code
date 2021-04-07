@@ -21,6 +21,7 @@ namespace Saper_1_0
     public partial class MainWindow : Window
     {
         private Random random = new Random();
+        
         private int[,] matricks;
         private int[,] mineMatricks;
         private Button[,] buttons;
@@ -28,23 +29,42 @@ namespace Saper_1_0
         private int SHeight;
         private int SWidth;
         int mines;
+        int vmines;
         bool gameIsLose;
+        private int NHeight;
+        private int NWidth;
+        private int Nmines;
+        private int time;
         public MainWindow()
         {
-           
-            
-           
             
             InitializeComponent();
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             
-            SHeight = 15;
-            SWidth = 15;
-            mines = 20;
-            Window.Window.Height = SHeight * 60 + 60;
-            Window.Window.Width = SWidth * 60;
-            mainGrid.Height = Window.Height - 60;
-            buttons = new Button[SHeight, SWidth];
-            SetMatricks();
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+
+
+            time = 0;
+            SHeight = 10;
+            SWidth = 10;
+            mines = 10;
+            gameIsLose = false;
+            isFlag = false;
+
+            NHeight = SHeight;
+            NWidth = SWidth;
+            Nmines = mines;
+            vmines = mines;
+
+            THeight.Text = SHeight.ToString();
+            TWidth.Text = SWidth.ToString();
+            TMines.Text = mines.ToString();
+            Mines.Text ="Mines: "+ mines.ToString();
+            Time.Text = "Time: " + time.ToString();
+
+            Window.Height = SHeight * 40 + 100;
+            Window.Width = SWidth * 40;
+            mainGrid.Height = Window.Height - 100;
             for (int i = 0; i < SHeight; i++)
             {
                 mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -53,6 +73,10 @@ namespace Saper_1_0
             {
                 mainGrid.RowDefinitions.Add(new RowDefinition());
             }
+
+            buttons = new Button[SHeight, SWidth];
+            
+           
             for (int i = 0; i < SHeight; i++)
             {
                 for (int j = 0; j <SWidth; j++)
@@ -67,11 +91,98 @@ namespace Saper_1_0
                     buttons[i, j] = a;
                 }
             }
-            gameIsLose = false;
-            isFlag = false;
+
             
+            
+            Settings.Click += Settings_Click;
             regime.Click += Regime_Click;
-            
+            SettingsOk.Click += SettingsOk_Click;
+            restart.Click += Restart_Click;
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
+
+            SetMatricks();
+            dispatcherTimer.Start();
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            time++;
+            Time.Text = "Time: " + time.ToString();
+        }
+
+        private void Restart_Click(object sender, RoutedEventArgs e)
+        {
+            Restart();
+        }
+
+        private void SettingsOk_Click(object sender, RoutedEventArgs e)
+        {
+            pLink.IsOpen = false;
+            if (person.IsChecked==true)
+            {
+                NHeight = Regulator(THeight.Text, 5, 20);
+                THeight.Text = NHeight.ToString();
+                NWidth = Regulator(TWidth.Text, 5, 20);
+                TWidth.Text = NWidth.ToString();
+                Nmines = Regulator(TMines.Text, 5, NWidth * NHeight - 9);
+                TMines.Text = Nmines.ToString();
+            }
+            else if(noob.IsChecked==true)
+            {
+                NHeight = 10;
+                NWidth=10;
+                Nmines = 10;
+            }
+            else if (notpro.IsChecked==true)
+            {
+                NHeight = 15;
+                NWidth = 15;
+                Nmines = 50;
+            }
+            else
+            {
+                NHeight = 20;
+                NWidth = 20;
+                Nmines = 100;
+            }
+            Restart();
+        }
+        private int Regulator(string Text,int b,int c)
+        {
+            int a = 0;
+            for (int i = 0; i < Text.Length; i++)
+            {
+                
+                if (IsNum(Text[i]))
+                {
+                    a *= 10;
+                    a += (int)Text[i]-(int)'0';
+                }
+            }
+            if (a>c)
+            {
+                a = c;
+            }
+            if (a<b)
+            {
+                a = b;
+            }
+            return a;
+        }
+        private bool IsNum(char a)
+        {
+            if (a<'0'||a>'9')
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            pLink.IsOpen = true;
         }
 
         private void Regime_Click(object sender, RoutedEventArgs e)
@@ -105,7 +216,7 @@ namespace Saper_1_0
                         ShowMines();
                         gameIsLose = true;
                         MessageBox.Show("You die");
-                        Restart();
+                        
                         break;
                     case -0:
                         a.Content = " ";
@@ -158,14 +269,22 @@ namespace Saper_1_0
                 {
                     ChekWin();
                 }
+                else
+                {
+                    Restart();
+                }
             }
             else if (isFlag&&a.Content==null)
             {
                 a.Content = "M";
+                vmines--;
+                Mines.Text = "Mines: " + (vmines).ToString();
             }
             else if (isFlag&&a.Content=="M")
             {
                 a.Content = null;
+                vmines++;
+                Mines.Text = "Mines: " + (vmines).ToString();
             }
             
         }
@@ -398,19 +517,44 @@ namespace Saper_1_0
         }
         public void Restart()
         {
+              
+            SWidth = NWidth;
+            SHeight = NHeight;
+            mines = Nmines;
+            vmines = mines;
+            Window.Height = SHeight * 40 + 100;
+            Window.Width = SWidth * 40;
+            mainGrid.Height = Window.Height - 100;
+            mainGrid.ColumnDefinitions.Clear();
+            mainGrid.RowDefinitions.Clear();
+
+            buttons = new Button[SHeight, SWidth];
+            for (int i = 0; i < SHeight; i++)
+            {
+                mainGrid.RowDefinitions.Add(new RowDefinition());
+                
+            }
+            for (int j = 0; j < SWidth; j++)
+            {
+                mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
             for (int i = 0; i < SHeight; i++)
             {
                 for (int j = 0; j < SWidth; j++)
                 {
-                    buttons[i, j].Content = null;
-                    buttons[i, j].Background = new SolidColorBrush(Colors.LightSkyBlue);
-                   
-                    mines = 20;
-                    gameIsLose = false;
-                    SetMatricks();
+                    Button a = new Button();
+                    a.Click += A_Click;
+                    a.FontSize = 30;
+                    a.Background = new SolidColorBrush(Colors.LightSkyBlue);
+                    mainGrid.Children.Add(a);
+                    Grid.SetColumn(a, j);
+                    Grid.SetRow(a, i);
+                    buttons[i, j] = a;
                 }
             }
+            gameIsLose = false;
+            SetMatricks();
+         
         }
     }
 }
-
