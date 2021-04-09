@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Saper_1_0"
         mc:Ignorable="d"
-        Title="MainWindow" Height="660" Width="600" Name="Window">
+        Title="MainWindow" Height="660" Width="600" Name="Window" HorizontalAlignment="Center" VerticalAlignment="Center" WindowStartupLocation="CenterScreen" >
     <DockPanel>
-        <Menu DockPanel.Dock="Top" Height="25" Background="White">
+        <Menu DockPanel.Dock="Top" Height="25" Background="White" >
             <MenuItem Header="Game">
                 <MenuItem Header="Settings" Name="Settings"/>
                 <MenuItem Header="Restart" Name="restart"/>
             </MenuItem>
-            <MenuItem Header="Flag" Name="regime"/>
+           
 
 
         </Menu>
