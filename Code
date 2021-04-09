@@ -21,7 +21,7 @@ namespace Saper_1_0
     public partial class MainWindow : Window
     {
         private Random random = new Random();
-        
+
         private int[,] matricks;
         private int[,] mineMatricks;
         private Button[,] buttons;
@@ -37,10 +37,10 @@ namespace Saper_1_0
         private int time;
         public MainWindow()
         {
-            
+
             InitializeComponent();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            
+
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 
 
@@ -59,12 +59,13 @@ namespace Saper_1_0
             THeight.Text = SHeight.ToString();
             TWidth.Text = SWidth.ToString();
             TMines.Text = mines.ToString();
-            Mines.Text ="Mines: "+ mines.ToString();
+            Mines.Text = "Mines: " + mines.ToString();
             Time.Text = "Time: " + time.ToString();
 
             Window.Height = SHeight * 40 + 100;
             Window.Width = SWidth * 40;
             mainGrid.Height = Window.Height - 100;
+
             for (int i = 0; i < SHeight; i++)
             {
                 mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -75,11 +76,11 @@ namespace Saper_1_0
             }
 
             buttons = new Button[SHeight, SWidth];
-            
-           
+
+
             for (int i = 0; i < SHeight; i++)
             {
-                for (int j = 0; j <SWidth; j++)
+                for (int j = 0; j < SWidth; j++)
                 {
                     Button a = new Button();
                     a.Click += A_Click;
@@ -92,8 +93,8 @@ namespace Saper_1_0
                 }
             }
 
-            
-            
+
+
             Settings.Click += Settings_Click;
             regime.Click += Regime_Click;
             SettingsOk.Click += SettingsOk_Click;
@@ -114,26 +115,26 @@ namespace Saper_1_0
         {
             Restart();
         }
-
         private void SettingsOk_Click(object sender, RoutedEventArgs e)
         {
             pLink.IsOpen = false;
-            if (person.IsChecked==true)
+            if (person.IsChecked == true)
             {
                 NHeight = Regulator(THeight.Text, 5, 20);
                 THeight.Text = NHeight.ToString();
                 NWidth = Regulator(TWidth.Text, 5, 20);
                 TWidth.Text = NWidth.ToString();
                 Nmines = Regulator(TMines.Text, 5, NWidth * NHeight - 9);
+                MessageBox.Show(Nmines.ToString());
                 TMines.Text = Nmines.ToString();
             }
-            else if(noob.IsChecked==true)
+            else if (noob.IsChecked == true)
             {
                 NHeight = 10;
-                NWidth=10;
+                NWidth = 10;
                 Nmines = 10;
             }
-            else if (notpro.IsChecked==true)
+            else if (notpro.IsChecked == true)
             {
                 NHeight = 15;
                 NWidth = 15;
@@ -145,25 +146,26 @@ namespace Saper_1_0
                 NWidth = 20;
                 Nmines = 100;
             }
+            Mines.Text = $"Mines: {Nmines.ToString()}";
             Restart();
         }
-        private int Regulator(string Text,int b,int c)
+        private int Regulator(string Text, int b, int c)
         {
             int a = 0;
             for (int i = 0; i < Text.Length; i++)
             {
-                
+
                 if (IsNum(Text[i]))
                 {
                     a *= 10;
-                    a += (int)Text[i]-(int)'0';
+                    a += (int)Text[i] - (int)'0';
                 }
             }
-            if (a>c)
+            if (a > c)
             {
                 a = c;
             }
-            if (a<b)
+            if (a < b)
             {
                 a = b;
             }
@@ -171,7 +173,7 @@ namespace Saper_1_0
         }
         private bool IsNum(char a)
         {
-            if (a<'0'||a>'9')
+            if (a < '0' || a > '9')
             {
                 return false;
             }
@@ -184,7 +186,6 @@ namespace Saper_1_0
         {
             pLink.IsOpen = true;
         }
-
         private void Regime_Click(object sender, RoutedEventArgs e)
         {
             if (!isFlag)
@@ -198,15 +199,13 @@ namespace Saper_1_0
                 regime.Header = "Flag";
             }
         }
-
         private void A_Click(object sender, RoutedEventArgs e)
         {
             Button a = (Button)sender;
-            if (a.Content==null&&!isFlag)
+            if (a.Content == null && !isFlag)
             {
-                
+
                 int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-                
 
                 switch (b)
                 {
@@ -216,7 +215,6 @@ namespace Saper_1_0
                         ShowMines();
                         gameIsLose = true;
                         MessageBox.Show("You die");
-                        
                         break;
                     case -0:
                         a.Content = " ";
@@ -225,7 +223,7 @@ namespace Saper_1_0
                         break;
                     case 1:
                         a.Content = b;
-                       
+
                         a.Foreground = new SolidColorBrush(Colors.Blue);
                         a.Background = new SolidColorBrush(Colors.LightGray);
                         break;
@@ -256,7 +254,7 @@ namespace Saper_1_0
                         break;
                     case 7:
                         a.Content = b;
-                        a.Foreground= new SolidColorBrush(Colors.Black);
+                        a.Foreground = new SolidColorBrush(Colors.Black);
                         a.Background = new SolidColorBrush(Colors.LightGray);
                         break;
                     case 8:
@@ -265,47 +263,41 @@ namespace Saper_1_0
                         a.Background = new SolidColorBrush(Colors.LightGray);
                         break;
                 }
-                if (!gameIsLose)
-                {
-                    ChekWin();
-                }
-                else
-                {
-                    Restart();
-                }
+                if (!gameIsLose) CheckWin();
+                else Restart();
             }
-            else if (isFlag&&a.Content==null)
+            else if (isFlag && a.Content == null)
             {
                 a.Content = "M";
                 vmines--;
                 Mines.Text = "Mines: " + (vmines).ToString();
             }
-            else if (isFlag&&a.Content=="M")
+            else if (isFlag && a.Content == "M")
             {
                 a.Content = null;
                 vmines++;
                 Mines.Text = "Mines: " + (vmines).ToString();
             }
-            
+
         }
-        public void Open(int x,int y)
+        public void Open(int x, int y)
         {
             for (int i = 0; i < SHeight; i++)
             {
                 for (int j = 0; j < SWidth; j++)
                 {
-                    if ((i-x)*(i-x)<2&&(j-y)*(j-y)<2)
+                    if ((i - x) * (i - x) < 2 && (j - y) * (j - y) < 2)
                     {
                         Button a = buttons[i, j];
                         if (a.Content == null)
                         {
 
                             int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-                            
-                            
+
+
                             switch (b)
                             {
-                                
+
                                 case -0:
                                     a.Content = " ";
                                     a.Background = new SolidColorBrush(Colors.LightGray);
@@ -355,7 +347,7 @@ namespace Saper_1_0
                             }
                         }
                     }
-                    
+
                 }
             }
         }
@@ -365,12 +357,12 @@ namespace Saper_1_0
             {
                 int x = random.Next(SHeight);
                 int y = random.Next(SWidth);
-                while (mineMatricks[x,y]==1)
+                while (mineMatricks[x, y] == 1)
                 {
                     x = random.Next(SHeight);
                     y = random.Next(SWidth);
                 }
-                mineMatricks[x,y] = 1;
+                mineMatricks[x, y] = 1;
             }
         }
         public void SetMatricks()
@@ -378,11 +370,11 @@ namespace Saper_1_0
             mineMatricks = new int[SHeight, SWidth];
             matricks = new int[SHeight, SWidth];
             SetMines();
-            for (int i = 1; i < SHeight-1; i++)
+            for (int i = 1; i < SHeight - 1; i++)
             {
-                for (int j = 1; j < SWidth-1; j++)
+                for (int j = 1; j < SWidth - 1; j++)
                 {
-                    if (mineMatricks[i,j]!=1)
+                    if (mineMatricks[i, j] != 1)
                     {
                         matricks[i, j] = (mineMatricks[i - 1, j - 1] + mineMatricks[i - 1, j] + mineMatricks[i - 1, j + 1] +
                                             mineMatricks[i, j - 1] + mineMatricks[i, j + 1] +
@@ -392,12 +384,12 @@ namespace Saper_1_0
                     {
                         matricks[i, j] = -1;
                     }
-                    
+
                 }
             }
-            for (int i = 1; i < SHeight-1; i++)
+            for (int i = 1; i < SHeight - 1; i++)
             {
-                if (mineMatricks[i,0]!=1)
+                if (mineMatricks[i, 0] != 1)
                 {
                     matricks[i, 0] = mineMatricks[i, 1] + mineMatricks[i - 1, 0] + mineMatricks[i - 1, 1]
                         + mineMatricks[i + 1, 0] + mineMatricks[i + 1, 1];
@@ -407,21 +399,21 @@ namespace Saper_1_0
                     matricks[i, 0] = -1;
                 }
             }
-            for (int i = 1; i < SHeight-1; i++)
+            for (int i = 1; i < SHeight - 1; i++)
             {
-                if (mineMatricks[i, SWidth-1] != 1)
+                if (mineMatricks[i, SWidth - 1] != 1)
                 {
-                    matricks[i, SWidth-1] = mineMatricks[i, SWidth-2] + mineMatricks[i - 1, SWidth-1] + mineMatricks[i - 1, SWidth-2]
-                        + mineMatricks[i + 1, SWidth-1] + mineMatricks[i + 1, SWidth-2];
+                    matricks[i, SWidth - 1] = mineMatricks[i, SWidth - 2] + mineMatricks[i - 1, SWidth - 1] + mineMatricks[i - 1, SWidth - 2]
+                        + mineMatricks[i + 1, SWidth - 1] + mineMatricks[i + 1, SWidth - 2];
                 }
                 else
                 {
                     matricks[i, SWidth - 1] = -1;
                 }
             }
-            for (int i = 1; i < SWidth-1; i++)
+            for (int i = 1; i < SWidth - 1; i++)
             {
-                if (mineMatricks[SHeight-1,i] != 1)
+                if (mineMatricks[SHeight - 1, i] != 1)
                 {
                     matricks[SHeight - 1, i] = mineMatricks[SHeight - 2, i] + mineMatricks[SHeight - 1, i - 1] + mineMatricks[SHeight - 2, i - 1]
                         + mineMatricks[SHeight - 1, i + 1] + mineMatricks[SHeight - 2, i + 1];
@@ -431,7 +423,7 @@ namespace Saper_1_0
                     matricks[SHeight - 1, i] = -1;
                 }
             }
-            for (int i = 1; i < SWidth-1; i++)
+            for (int i = 1; i < SWidth - 1; i++)
             {
                 if (mineMatricks[0, i] != 1)
                 {
@@ -443,7 +435,7 @@ namespace Saper_1_0
                     matricks[0, i] = -1;
                 }
             }
-            if (mineMatricks[0,0]!=1)
+            if (mineMatricks[0, 0] != 1)
             {
                 matricks[0, 0] = mineMatricks[0, 1] + mineMatricks[1, 0] + mineMatricks[1, 1];
             }
@@ -451,65 +443,65 @@ namespace Saper_1_0
             {
                 matricks[0, 0] = -1;
             }
-            if (mineMatricks[SHeight-1, SWidth-1] != 1)
+            if (mineMatricks[SHeight - 1, SWidth - 1] != 1)
             {
-                matricks[SHeight-1, SWidth-1] = mineMatricks[SHeight-1,SWidth-2] + mineMatricks[SHeight-2, SWidth-1] + mineMatricks[SHeight-2, SWidth-2];
+                matricks[SHeight - 1, SWidth - 1] = mineMatricks[SHeight - 1, SWidth - 2] + mineMatricks[SHeight - 2, SWidth - 1] + mineMatricks[SHeight - 2, SWidth - 2];
             }
             else
             {
-                matricks[SHeight-1, SWidth-1] = -1;
+                matricks[SHeight - 1, SWidth - 1] = -1;
             }
-            if (mineMatricks[0, SWidth-1] != 1)
+            if (mineMatricks[0, SWidth - 1] != 1)
             {
-                matricks[0, SWidth-1] = mineMatricks[0, SWidth-2] + mineMatricks[1, SWidth-1] + mineMatricks[1, SWidth-2];
-            }
-            else
-            {
-                matricks[0, SWidth-1] = -1;
-            }
-            if (mineMatricks[SHeight-1, 0] != 1)
-            {
-                matricks[SHeight-1, 0] = mineMatricks[SHeight-1, 1] + mineMatricks[SHeight-2, 0] + mineMatricks[SHeight-2, 1];
+                matricks[0, SWidth - 1] = mineMatricks[0, SWidth - 2] + mineMatricks[1, SWidth - 1] + mineMatricks[1, SWidth - 2];
             }
             else
             {
-                matricks[SHeight-1, 0] = -1;
+                matricks[0, SWidth - 1] = -1;
+            }
+            if (mineMatricks[SHeight - 1, 0] != 1)
+            {
+                matricks[SHeight - 1, 0] = mineMatricks[SHeight - 1, 1] + mineMatricks[SHeight - 2, 0] + mineMatricks[SHeight - 2, 1];
+            }
+            else
+            {
+                matricks[SHeight - 1, 0] = -1;
             }
         }
         public void ShowMines()
         {
             for (int i = 0; i < SHeight; i++)
             {
-                for (int j = 0; j <SWidth; j++)
+                for (int j = 0; j < SWidth; j++)
                 {
-                    
-                    if (mineMatricks[i,j]==1)
+
+                    if (mineMatricks[i, j] == 1)
                     {
-                        buttons[i,j].Background = new SolidColorBrush(Colors.Red);
-                        buttons[i,j].Content = " ";
+                        buttons[i, j].Background = new SolidColorBrush(Colors.Red);
+                        buttons[i, j].Content = " ";
                     }
-                    else if(matricks[i,j]==0)
+                    else if (matricks[i, j] == 0)
                     {
                         buttons[i, j].Content = " ";
                     }
-                    
+
                 }
             }
         }
-        public void ChekWin()
+        public void CheckWin()
         {
             int open = 0;
             for (int i = 0; i < SHeight; i++)
             {
-                for (int j = 0; j <SWidth; j++)
+                for (int j = 0; j < SWidth; j++)
                 {
-                    if (buttons[i,j].Content!="M"&&buttons[i,j].Content!=null)
+                    if (buttons[i, j].Content != "M" && buttons[i, j].Content != null)
                     {
                         open++;
                     }
                 }
             }
-            if (open==SHeight*SWidth-mines)
+            if (open == SHeight * SWidth - mines)
             {
                 MessageBox.Show("You win");
                 Restart();
@@ -517,10 +509,11 @@ namespace Saper_1_0
         }
         public void Restart()
         {
-              
+
             SWidth = NWidth;
             SHeight = NHeight;
             mines = Nmines;
+            time = 0;
             vmines = mines;
             Window.Height = SHeight * 40 + 100;
             Window.Width = SWidth * 40;
@@ -532,7 +525,7 @@ namespace Saper_1_0
             for (int i = 0; i < SHeight; i++)
             {
                 mainGrid.RowDefinitions.Add(new RowDefinition());
-                
+
             }
             for (int j = 0; j < SWidth; j++)
             {
@@ -554,7 +547,7 @@ namespace Saper_1_0
             }
             gameIsLose = false;
             SetMatricks();
-         
+
         }
     }
 }
