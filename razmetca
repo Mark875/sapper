@@ -5,23 +5,65 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Saper_1_0"
         mc:Ignorable="d"
-        Title="MainWindow" Height="660" Width="600" Name="Window">
+        Title="MainWindow" Height="660" Width="600" Name="Window" ResizeMode="NoResize">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Height="25" Background="White">
             <MenuItem Header="Game">
                 <MenuItem Header="Settings" Name="Settings"/>
+                <MenuItem Header="Best results" Name="Results"/>
                 <MenuItem Header="Restart" Name="restart"/>
             </MenuItem>
-            <MenuItem Header="Flag" Name="regime"/>
-
-
+            <MenuItem Header="Help" Name="Help"/>
         </Menu>
+        <Popup Name="pLeaders" StaysOpen="False" Placement="Mouse" Width="240" Height="150"
+               PopupAnimation="Scroll" AllowsTransparency="True">
+            <Border BorderBrush="LightGray" BorderThickness="10" Background="Beige">
+                <Grid ShowGridLines="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="     Noob" FontSize="20"/>
+                    <TextBlock Grid.Column="1" Grid.Row="0" Name="NoobResults" FontSize="20"/>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="     NotPro" FontSize="20"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Name="NotProResults" FontSize="20"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="     Pro" FontSize="20"/>
+                    <TextBlock Grid.Column="1" Grid.Row="2" Name="ProResults" FontSize="20"/>
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="     User" FontSize="20"/>
+                    <TextBlock Grid.Column="1" Grid.Row="3" Name="UserResults" FontSize="20"/>
+                </Grid>
+            </Border>
+        </Popup>
+        
+        <Popup Name="pHelp" StaysOpen="True" Placement="Mouse" Width="485" Height="150"
+               PopupAnimation="Scroll" AllowsTransparency="True">
+            <Border BorderBrush="LightGray" BorderThickness="10" Background="Beige">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Name="HELP" FontSize="14" Grid.ColumnSpan="2"/>
+                    <Button Name="Ok" Grid.Column="1" Grid.Row="1" Content="Ок" Height="25" Width="45"/>
+                </Grid>
+            </Border>
+        </Popup>
         <Grid x:Name="mainGrid" DockPanel.Dock="Top" >
             <Grid.ColumnDefinitions>
-                
+
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                
+
             </Grid.RowDefinitions>
         </Grid>
         <Grid DockPanel.Dock="Bottom" Background="White">
@@ -30,7 +72,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Name="Mines" Margin="10" TextWrapping="Wrap" Background="White" >
-                
+
             </TextBlock>
             <TextBlock Name="Time" Margin="10" TextWrapping="Wrap" Background="White" Grid.Column="1" >
 
@@ -65,7 +107,7 @@
                         <TextBlock Margin="10" TextWrapping="Wrap">
                             Поле: 15X15
                             Мины: 50
-                            
+
 
                         </TextBlock>
                         <RadioButton GroupName="1" Content="Проффесионал" Name="pro"/>
@@ -75,18 +117,18 @@
 
                         </TextBlock>
                         <RadioButton GroupName="1" Content="Пользовательский" Name="person"/>
-                        
+
                     </StackPanel>
                     <TextBlock Margin="10" TextWrapping="Wrap" Grid.Column="1">
                             Пользовательские настройки:
                     </TextBlock>
                     <StackPanel Grid.Column="1" Grid.Row="1">
-                        
+
                         <TextBlock Margin="10" TextWrapping="Wrap">
                             Высота поля:
                         </TextBlock>
                         <TextBox Margin="10" TextWrapping="Wrap" Background="White" Name="THeight">
-                            
+
                         </TextBox>
                         <TextBlock Margin="10" TextWrapping="Wrap">
                             Ширина поля:
@@ -100,17 +142,14 @@
                         <TextBox Margin="10" TextWrapping="Wrap" Background="White" Name="TMines">
 
                         </TextBox>
-                        
+
                     </StackPanel>
                     <Button Content="Ок" Grid.Column="1" Grid.Row="2" Height="30" Width="60" Name="SettingsOk"/>
                 </Grid>
-                
-            </Border>
-            
 
+            </Border>
 
         </Popup>
-        
     </DockPanel>
-    
+
 </Window>
