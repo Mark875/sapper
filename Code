@@ -16,7 +16,7 @@ using System.IO;
 
 namespace Saper_1_0
 {
-    
+
     public partial class MainWindow : Window
     {
         private Random random = new Random();
@@ -24,7 +24,7 @@ namespace Saper_1_0
         private int[,] matricks;
         private int[,] mineMatricks;
         private Button[,] buttons;
-        
+
         private int SHeight;
         private int SWidth;
         int mines;
@@ -38,18 +38,18 @@ namespace Saper_1_0
         {
 
             InitializeComponent();
-            
+
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
 
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            
+
 
             time = 0;
             SHeight = 10;
             SWidth = 10;
             mines = 10;
             gameIsLose = false;
-           
+
 
             NHeight = SHeight;
             NWidth = SWidth;
@@ -61,6 +61,7 @@ namespace Saper_1_0
             TMines.Text = mines.ToString();
             Mines.Text = "Mines: " + mines.ToString();
             Time.Text = "Time: " + time.ToString();
+            HELP.Text = "Это игра про неудачливого сапера, пытающегося пройти минное поле.\nСегодня этим сапером будете вы.\nЛКМ - открыть клетку. ПКМ - поставить флаг.\nЧисла показывают количество мин в соседних клетках.\nНадеюсь, вам повезет.";
 
             Window.Height = SHeight * 40 + 100;
             Window.Width = SWidth * 40;
@@ -95,16 +96,44 @@ namespace Saper_1_0
             }
 
 
-
             Settings.Click += Settings_Click;
-           
+            Help.Click += Help_Click;
             SettingsOk.Click += SettingsOk_Click;
             restart.Click += Restart_Click;
             dispatcherTimer.Tick += DispatcherTimer_Tick;
-            
+            Ok.Click += Ok_Click;
+            Results.Click += Results_Click;
+
 
             SetMatricks();
             dispatcherTimer.Start();
+        }
+
+        private void Results_Click(object sender, RoutedEventArgs e)
+        {
+            pLeaders.IsOpen = true;
+            StreamReader reader = new StreamReader("NoobRecord.rc");
+            NoobResults.Text = $"        {reader.ReadLine()}";
+            reader.Close();
+            StreamReader reader1 = new StreamReader("NotProRecord.rc");
+            NotProResults.Text = $"        {reader1.ReadLine()}";
+            reader1.Close();
+            StreamReader reader2 = new StreamReader("ProRecord.rc");
+            ProResults.Text = $"        {reader2.ReadLine()}";
+            reader2.Close();
+            StreamReader reader3 = new StreamReader("UserRecord.rc");
+            UserResults.Text = $"        {reader3.ReadLine()}";
+            reader3.Close();
+        }
+
+        private void Ok_Click(object sender, RoutedEventArgs e)
+        {
+            pHelp.IsOpen = false;
+        }
+
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            pHelp.IsOpen = true;
         }
 
         private void A_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -144,7 +173,6 @@ namespace Saper_1_0
                 NWidth = Regulator(TWidth.Text, 5, 20);
                 TWidth.Text = NWidth.ToString();
                 Nmines = Regulator(TMines.Text, 5, NWidth * NHeight - 9);
-                MessageBox.Show(Nmines.ToString());
                 TMines.Text = Nmines.ToString();
             }
             else if (noob.IsChecked == true)
@@ -205,15 +233,15 @@ namespace Saper_1_0
         {
             pLink.IsOpen = true;
         }
-       
+
         private void A_Click(object sender, RoutedEventArgs e)
         {
             Button a = (Button)sender;
-            
-            
+
+
 
             int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-            if (a.Content==null)
+            if (a.Content == null)
             {
                 switch (b)
                 {
@@ -276,9 +304,9 @@ namespace Saper_1_0
                 if (!gameIsLose) CheckWin();
                 else Restart();
             }
-            
-            
-            
+
+
+
 
         }
         public void Open(int x, int y)
@@ -491,7 +519,6 @@ namespace Saper_1_0
         }
         public void CheckWin()
         {
-            
 
             int open = 0;
             for (int i = 0; i < SHeight; i++)
@@ -508,15 +535,15 @@ namespace Saper_1_0
             {
                 dispatcherTimer.Stop();
                 StreamReader reader;
-                if (noob.IsChecked==true)
+                if (noob.IsChecked == true)
                 {
                     reader = new StreamReader("NoobRecord.rc");
                 }
-                else if (notpro.IsChecked==true)
+                else if (notpro.IsChecked == true)
                 {
                     reader = new StreamReader("NotProRecord.rc");
                 }
-                else if (pro.IsChecked==true)
+                else if (pro.IsChecked == true)
                 {
                     reader = new StreamReader("ProRecord.rc");
                 }
@@ -525,10 +552,10 @@ namespace Saper_1_0
                     reader = new StreamReader("UserRecord.rc");
                 }
                 string a = reader.ReadLine();
-                if (a=="0"||time<int.Parse(a))
+                if (a == "" || a == "0" || a == null)
                 {
                     reader.Close();
-                    MessageBox.Show("Вы выйграли!\nВаше время: " + time + "\nРекордное время: " + time);
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + time);
                     StreamWriter writer;
                     if (noob.IsChecked == true)
                     {
@@ -545,21 +572,45 @@ namespace Saper_1_0
                     else
                     {
                         writer = new StreamWriter("UserRecord.rc");
-                        
+
+                    }
+                    writer.WriteLine(time);
+                    writer.Close();
+                }
+                else if (time < int.Parse(a))
+                {
+                    reader.Close();
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + time);
+                    StreamWriter writer;
+                    if (noob.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NoobRecord.rc");
+                    }
+                    else if (notpro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NotProRecord.rc");
+                    }
+                    else if (pro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("ProRecord.rc");
+                    }
+                    else
+                    {
+                        writer = new StreamWriter("UserRecord.rc");
+
                     }
                     writer.WriteLine(time);
                     writer.Close();
                 }
                 else
                 {
-                    MessageBox.Show("Вы выйграли!\nВаше время: " + time + "\nРекордное время: " + a);
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + a);
                     reader.Close();
-                    
                 }
                 Restart();
             }
         }
-        
+
         public void Restart()
         {
 
@@ -605,6 +656,6 @@ namespace Saper_1_0
 
         }
 
-       
+
     }
 }
