@@ -12,20 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace Saper_1_0
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         private Random random = new Random();
-
+        System.Windows.Threading.DispatcherTimer dispatcherTimer;
         private int[,] matricks;
         private int[,] mineMatricks;
         private Button[,] buttons;
-        private bool isFlag;
+
         private int SHeight;
         private int SWidth;
         int mines;
@@ -39,7 +38,8 @@ namespace Saper_1_0
         {
 
             InitializeComponent();
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
 
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 
@@ -49,7 +49,7 @@ namespace Saper_1_0
             SWidth = 10;
             mines = 10;
             gameIsLose = false;
-            isFlag = false;
+
 
             NHeight = SHeight;
             NWidth = SWidth;
@@ -61,6 +61,7 @@ namespace Saper_1_0
             TMines.Text = mines.ToString();
             Mines.Text = "Mines: " + mines.ToString();
             Time.Text = "Time: " + time.ToString();
+            HELP.Text = "Это игра про неудачливого сапера, пытающегося пройти минное поле.\nСегодня этим сапером будете вы.\nЛКМ - открыть клетку. ПКМ - поставить флаг.\nЧисла показывают количество мин в соседних клетках.\nНадеюсь, вам повезет.";
 
             Window.Height = SHeight * 40 + 100;
             Window.Width = SWidth * 40;
@@ -84,6 +85,7 @@ namespace Saper_1_0
                 {
                     Button a = new Button();
                     a.Click += A_Click;
+                    a.MouseRightButtonDown += A_MouseRightButtonDown;
                     a.FontSize = 30;
                     a.Background = new SolidColorBrush(Colors.LightSkyBlue);
                     mainGrid.Children.Add(a);
@@ -94,15 +96,61 @@ namespace Saper_1_0
             }
 
 
-
             Settings.Click += Settings_Click;
-            regime.Click += Regime_Click;
+            Help.Click += Help_Click;
             SettingsOk.Click += SettingsOk_Click;
             restart.Click += Restart_Click;
             dispatcherTimer.Tick += DispatcherTimer_Tick;
+            Ok.Click += Ok_Click;
+            Results.Click += Results_Click;
+
 
             SetMatricks();
             dispatcherTimer.Start();
+        }
+
+        private void Results_Click(object sender, RoutedEventArgs e)
+        {
+            pLeaders.IsOpen = true;
+            StreamReader reader = new StreamReader("NoobRecord.rc");
+            NoobResults.Text = $"        {reader.ReadLine()}";
+            reader.Close();
+            StreamReader reader1 = new StreamReader("NotProRecord.rc");
+            NotProResults.Text = $"        {reader1.ReadLine()}";
+            reader1.Close();
+            StreamReader reader2 = new StreamReader("ProRecord.rc");
+            ProResults.Text = $"        {reader2.ReadLine()}";
+            reader2.Close();
+            StreamReader reader3 = new StreamReader("UserRecord.rc");
+            UserResults.Text = $"        {reader3.ReadLine()}";
+            reader3.Close();
+        }
+
+        private void Ok_Click(object sender, RoutedEventArgs e)
+        {
+            pHelp.IsOpen = false;
+        }
+
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            pHelp.IsOpen = true;
+        }
+
+        private void A_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Button a = (Button)sender;
+            if (a.Content == null)
+            {
+                a.Content = "M";
+                vmines--;
+                Mines.Text = "Mines: " + (vmines).ToString();
+            }
+            else if (a.Content == "M")
+            {
+                a.Content = null;
+                vmines++;
+                Mines.Text = "Mines: " + (vmines).ToString();
+            }
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
@@ -125,7 +173,6 @@ namespace Saper_1_0
                 NWidth = Regulator(TWidth.Text, 5, 20);
                 TWidth.Text = NWidth.ToString();
                 Nmines = Regulator(TMines.Text, 5, NWidth * NHeight - 9);
-                MessageBox.Show(Nmines.ToString());
                 TMines.Text = Nmines.ToString();
             }
             else if (noob.IsChecked == true)
@@ -186,34 +233,25 @@ namespace Saper_1_0
         {
             pLink.IsOpen = true;
         }
-        private void Regime_Click(object sender, RoutedEventArgs e)
-        {
-            if (!isFlag)
-            {
-                isFlag = true;
-                regime.Header = "Open";
-            }
-            else
-            {
-                isFlag = false;
-                regime.Header = "Flag";
-            }
-        }
+
         private void A_Click(object sender, RoutedEventArgs e)
         {
             Button a = (Button)sender;
-            if (a.Content == null && !isFlag)
+
+
+
+            int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
+            if (a.Content == null)
             {
-
-                int b = matricks[Grid.GetRow(a), Grid.GetColumn(a)];
-
                 switch (b)
                 {
+
                     case -1:
                         a.Background = new SolidColorBrush(Colors.Red);
                         a.Content = " ";
                         ShowMines();
                         gameIsLose = true;
+                        dispatcherTimer.Stop();
                         MessageBox.Show("You die");
                         break;
                     case -0:
@@ -266,18 +304,9 @@ namespace Saper_1_0
                 if (!gameIsLose) CheckWin();
                 else Restart();
             }
-            else if (isFlag && a.Content == null)
-            {
-                a.Content = "M";
-                vmines--;
-                Mines.Text = "Mines: " + (vmines).ToString();
-            }
-            else if (isFlag && a.Content == "M")
-            {
-                a.Content = null;
-                vmines++;
-                Mines.Text = "Mines: " + (vmines).ToString();
-            }
+
+
+
 
         }
         public void Open(int x, int y)
@@ -490,6 +519,7 @@ namespace Saper_1_0
         }
         public void CheckWin()
         {
+
             int open = 0;
             for (int i = 0; i < SHeight; i++)
             {
@@ -503,10 +533,84 @@ namespace Saper_1_0
             }
             if (open == SHeight * SWidth - mines)
             {
-                MessageBox.Show("You win");
+                dispatcherTimer.Stop();
+                StreamReader reader;
+                if (noob.IsChecked == true)
+                {
+                    reader = new StreamReader("NoobRecord.rc");
+                }
+                else if (notpro.IsChecked == true)
+                {
+                    reader = new StreamReader("NotProRecord.rc");
+                }
+                else if (pro.IsChecked == true)
+                {
+                    reader = new StreamReader("ProRecord.rc");
+                }
+                else
+                {
+                    reader = new StreamReader("UserRecord.rc");
+                }
+                string a = reader.ReadLine();
+                if (a == "" || a == "0" || a == null)
+                {
+                    reader.Close();
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + time);
+                    StreamWriter writer;
+                    if (noob.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NoobRecord.rc");
+                    }
+                    else if (notpro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NotProRecord.rc");
+                    }
+                    else if (pro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("ProRecord.rc");
+                    }
+                    else
+                    {
+                        writer = new StreamWriter("UserRecord.rc");
+
+                    }
+                    writer.WriteLine(time);
+                    writer.Close();
+                }
+                else if (time < int.Parse(a))
+                {
+                    reader.Close();
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + time);
+                    StreamWriter writer;
+                    if (noob.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NoobRecord.rc");
+                    }
+                    else if (notpro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("NotProRecord.rc");
+                    }
+                    else if (pro.IsChecked == true)
+                    {
+                        writer = new StreamWriter("ProRecord.rc");
+                    }
+                    else
+                    {
+                        writer = new StreamWriter("UserRecord.rc");
+
+                    }
+                    writer.WriteLine(time);
+                    writer.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Вы выиграли!\nВаше время: " + time + "\nРекордное время: " + a);
+                    reader.Close();
+                }
                 Restart();
             }
         }
+
         public void Restart()
         {
 
@@ -514,6 +618,7 @@ namespace Saper_1_0
             SHeight = NHeight;
             mines = Nmines;
             time = 0;
+            dispatcherTimer.Start();
             vmines = mines;
             Window.Height = SHeight * 40 + 100;
             Window.Width = SWidth * 40;
@@ -537,6 +642,7 @@ namespace Saper_1_0
                 {
                     Button a = new Button();
                     a.Click += A_Click;
+                    a.MouseRightButtonDown += A_MouseRightButtonDown;
                     a.FontSize = 30;
                     a.Background = new SolidColorBrush(Colors.LightSkyBlue);
                     mainGrid.Children.Add(a);
@@ -549,5 +655,7 @@ namespace Saper_1_0
             SetMatricks();
 
         }
+
+
     }
 }
